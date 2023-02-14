@@ -88,7 +88,35 @@ export const findRepeatEdits = (password: string, passwordLength: number, toRemo
   } else if (passwordLength > 20) {
     // Remove repeating characters using toRemove as a decreasing count
     while (toRemove) {
-      
+      for (let i = 1; i < passwordLength; i++) {
+        if (password[i] === password[i - 1]) {
+          L++;
+        } else if (L - 2 % 3 === 1) {
+          edits += 1;
+          password = removeCharAt(password, i - 1, 1);
+          toRemove = toRemove - 1;
+        }
+        if (toRemove <= 0) break;
+      }
+      for (let i = 1; i < passwordLength; i++) {
+        if (password[i] === password[i - 1]) {
+          L++;
+        } else if (L - 2 % 3 === 2) {
+          edits += 2;
+          password = removeCharAt(password, i - 1, 2);
+          toRemove = toRemove - 2;
+        }
+        if (toRemove <= 0) break;
+      }
+      for (let i = 1; i < passwordLength; i++) {
+        if (password[i] === password[i - 1]) {
+          L++;
+        } else if (L - 2 % 3 === 0) {
+          edits += 3;
+          password = removeCharAt(password, i - 1, 3);
+          toRemove = toRemove - 3;
+        }
+      }
     }
     // Edit any remaining characters after removing those needed to get to 20 or less
     for (let i = 1; i < passwordLength; i++) {
@@ -114,3 +142,9 @@ export const findRepeatEdits = (password: string, passwordLength: number, toRemo
   // Return the number of repeat edits required
   return Math.floor(edits);
 };
+
+const removeCharAt = (str: string, i: number, toRemove: number): string => {
+  var tmp = str.split(''); // convert to an array
+  tmp.splice(i - toRemove , toRemove); // remove 1 element from the array (adjusting for non-zero-indexed counts)
+  return tmp.join(''); // reconstruct the string
+}
