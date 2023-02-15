@@ -1,4 +1,4 @@
-import { strongPasswordChecker } from "../../1_strong_password_checker";
+import { strongPasswordChecker, removeCharAt } from "../../../1_problems/1_strong_password_checker";
 
 describe('strongPasswordChecker', () => {
 
@@ -30,6 +30,13 @@ describe('strongPasswordChecker', () => {
   });
 
   it('checks for length greater than upper bound with incorrect unique characters and repeats', () => {
-    expect(strongPasswordChecker("aaaaaaaaaaaaaaaaaaaaaaaaa")).toBe(7);
+    expect(strongPasswordChecker("aaaaaaaaaaaaaaaaaaaaaaaaa")).toBe(11);
+  });
+});
+
+describe('removeCharAt()', () => {
+  it('returns correct string', () => {
+    expect(removeCharAt("aaaaaaaaaaaaaaaaaaaaaaaaa", 24, 2)).toBe("aaaaaaaaaaaaaaaaaaaaaaa");
+    expect(removeCharAt("aaaaaaaaaaaaaaaaaaaaaaa", 23, 3)).toBe("aaaaaaaaaaaaaaaaaaaa");
   });
 });
