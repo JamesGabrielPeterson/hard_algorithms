@@ -1,72 +1,76 @@
+import { ShortCodeContext } from "twilio/lib/rest/api/v2010/account/shortCode";
+
 /**
  * @param {string} password
  * @return {number}
  */
-export const strongPasswordChecker = (password: string): number | undefined => {
+export const strongPasswordChecker = (password: string): number => {
   // Find length of password
   const N = password.length;
-  // In the case where the length is correct
-  // Figure out how many edits are needed
-  // Return the max of constraints B and C
-  if (N >= 6 && N <= 20) {
-    // Create variables for unique character edits and repeat edits
-    // Find B and C
-    const B = findCharacterEdits(password, N);
-    const C = findRepeatEdits(password, N);
-    // Return the greatest value between constraints B and C
-    return Math.max(B, C);
+  // Create a variable to store the edits
+  let totalEdits = 0;
+  // If the string is the correct length, we only need to return the max of constraint B and C
+  // If the string is SHORT, we need to add characters until we reach 6, then possibly make edits
+  // if the string is LONG, we need to remove the characters exceeding 20, then possly make edits
+  
   // In the case where the length of the password is less than the lower bound
   // Return the max of all three constraints, A, B, and C
-  } else if (N < 6) {
+  if (N < 6) {
     // In the case where the length is less than lower bound (6)
     // Figure out how many characters need to be added, then
     // Figure out how many edits are needed
     // Create variables for unique character edits and repeat edits
     // Find A, B, and C
     const A = 6 - N;
-    const B = findCharacterEdits(password, N);
+    const B = findCharacterEdits(password);
     const C = findRepeatEdits(password, N);
     // Return the greatest value between constraints A, B, and C
-    return Math.max(A, B, C);
+    totalEdits = Math.max(A, B, C);
+  // In the case where the length is correct
+  // Figure out how many edits are needed
+  // Return the max of constraints B and C
+  } else if (N <= 20) {
+    // Create variables for unique character edits and repeat edits
+    // Find B and C
+    const B = findCharacterEdits(password);
+    const C = findRepeatEdits(password, N);
+    // Return the greatest value between constraints B and C
+    totalEdits = Math.max(B, C);
   // In the case where the length of the password greater than the upper bound
   // Do this
-  } else if (N > 20) {
+  } else {
     // In the case where the length is greater than the upper bound (20)
     // Figure out who many characters need to be deleted, then
     // Figure out how many edits are needed
     // Find A, B, and C
     const A = Math.abs(N - 20);
-    const B = findCharacterEdits(password, N);
+    const B = findCharacterEdits(password);
     const C = findRepeatEdits(password, N, A);
     // Return the number of characters that need to be removed minus the max of constraints B and C
-    return A + Math.max(B, C);
+    totalEdits = A + Math.max(B, C);
   }
+
+  return totalEdits;
 };
 
-export const findCharacterEdits = (password: string, passwordLength: number): number => {
-  // Create array to track number of each unique character
-  let trackerArray = [0, 0, 0];
-  // Run algorithms to find unique character edits
-  // Loop over password
-  for (let i = 0; i < passwordLength; i++) {
-    if (password.charCodeAt(i) >= 65 && password.charCodeAt(i) <= 90) {
-      trackerArray[0]++;
-    } else if (password.charCodeAt(i) >= 97 && password.charCodeAt(i) <= 122) {
-      trackerArray[1]++;
-    } else if (password.charCodeAt(i) >= 48 && password.charCodeAt(i) <= 57) {
-      trackerArray[2]++;
-    }
-  }
-  // Write logic for what's missing
-  if (trackerArray[0] && trackerArray[1] && trackerArray[2]) return 0;
-  if (trackerArray[0] && trackerArray[1]) return 1;
-  if (trackerArray[1] && trackerArray[2]) return 1;
-  if (trackerArray[0] && trackerArray[2]) return 1;
-  if (trackerArray[0]) return 2;
-  if (trackerArray[1]) return 2;
-  if (trackerArray[2]) return 2;
-  return 3;
+export const findCharacterEdits = (password: string): number => {
+  // Start with 3 edits needed
+  // Because we have not found any uppercase letters, lowercase letters, or numbers yet
+  let editsNeeded = 3;
+  // If a number exists in our password, eliminate that need
+  if (/[0-9]/.test(password)) editsNeeded--;
+    // If a lowercase letter exists in our password, eliminate that need
+  if (/[a-z]/.test(password)) editsNeeded--;
+    // If an uppercase letter exists in our password, eliminate that need
+  if (/[A-Z]/.test(password)) editsNeeded--;
+  // Return the required unique characters we have not encountered
+  return editsNeeded;
 };
+
+// Rebuild function below with switch statements flags:
+// SHORT
+// VALID
+// LONG
 
 export const findRepeatEdits = (password: string, passwordLength: number, toRemove?: number): number => {
   // Create variable to track edits and initialize it to 0
@@ -89,45 +93,12 @@ export const findRepeatEdits = (password: string, passwordLength: number, toRemo
     // Remove repeating characters using toRemove as a decreasing count
     while (toRemove && toRemove > 0) {
       for (let i = 1; i < passwordLength; i++) {
-        if (password[i] === password[i - 1]) {
-          L++;
-        } else if (L - 2 % 3 === 1) {
-          edits += 1;
-          password = removeCharAt(password, i, 1);
-          toRemove -= 1;
-        }
-        if (toRemove <= 0) break;
-      }
-      for (let i = 1; i < passwordLength; i++) {
-        if (password[i] === password[i - 1]) {
-          L++;
-        } else if (L - 2 % 3 === 2) {
-          edits += 2;
-          password = removeCharAt(password, i, 2);
-          toRemove -= 2;
-        }
-        if (toRemove <= 0) break;
-      }
-      for (let i = 1; i < passwordLength; i++) {
-        if (password[i] === password[i - 1]) {
-          L++;
-        } else if (L - 2 % 3 === 0) {
-          edits += 3;
-          password = removeCharAt(password, i, 3);
-          toRemove -= 3;
+        if (password[i] === password[i - 1] && password[i] === password[i + 1]) {
+          removeCharAt(password, i, 1);
+          toRemove--;
         }
       }
     }
-    // Edit any remaining characters after removing those needed to get to 20 or less
-    for (let i = 1; i < passwordLength; i++) {
-      if (password[i] === password[i - 1]) {
-        L++;
-      } else {
-        if (L >= 3) edits += L / 3;
-        L = 1;
-      }
-    }
-    if (L >= 3) edits += L / 3;
   } else {
     for (let i = 1; i < passwordLength; i++) {
       if (password[i] === password[i - 1]) {
