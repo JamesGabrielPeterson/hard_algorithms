@@ -1,4 +1,4 @@
-import { strongPasswordChecker, findRepeatEdits } from "../../1_strong_password_checker";
+import { strongPasswordChecker } from "../../1_strong_password_checker";
 
 describe('strongPasswordChecker', () => {
 
