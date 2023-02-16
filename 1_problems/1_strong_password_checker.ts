@@ -90,6 +90,11 @@ export const findRepeatEdits = (password: string, passwordLength: number, toRemo
     }
     if (L >= 3) edits += L / 3;
   } else if (passwordLength > 20) {
+    // Create three stacks
+    // One from which to remove first (L - 2 % 3 === 1)
+    // One from which to remove second (L - 2 % 3 === 2)
+    // One from which to remove third (L - 2 % 3 === 3)
+    
     // Remove repeating characters using toRemove as a decreasing count
     while (toRemove && toRemove > 0) {
       for (let i = 1; i < passwordLength; i++) {
