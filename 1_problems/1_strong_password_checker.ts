@@ -80,103 +80,50 @@ export const findCharacterEdits = (password: string): number => {
 export const findRepeatEdits = (password: string, passwordLength: number, toRemove?: number): number => {
   // Create variable to track edits and initialize it to 0
   let edits = 0;
-  // Create variable to count how many length (L) of sequence
-  let L = 1;
   // Run algorithm to find repeat characters
   // Loop over password tracking repeats depending on length of password
-  if (passwordLength >= 6 && passwordLength <= 20) {
-    for (let i = 1; i < passwordLength; i++) {
-      if (password[i] === password[i - 1]) {
-        L++;
-      } else {
-        if (L >= 3) edits += L / 3;
-        L = 1;
-      }
-    }
-    if (L >= 3) edits += L / 3;
-  } else if (passwordLength > 20) {
+  if (passwordLength > 20) {
     // Create three containers that must be processed in different order
     let { first, second, third } = sortSequences(password);
-    // Remove repeating characters using toRemove as a decreasing count
-    while (toRemove && toRemove > 0) {
-      let current: number[] = [0, 0];
-      // Process first array
-      while (first.length > 0) {
-        // Pop a value off from the first array
-        current = first.pop() || [0, 0];
-        // Remove the character that sits at this index from the password
-        removeCharAt(password, current[1] - 1, 1);
-        // Account for removed character in current
-        current[1]--;
-        // if the length of the sequence is greater than 3, add it to the third array
-        if (current[1] - current[0] > 3) third.push(current);
-        // Decrement toRemove by 1
-        toRemove--;
-        // Increase edit by 1
-        edits++;
-      }
-      // Process second array
-      while (second.length > 0) {
-        // Pop a value off from the second array
-        current = second.pop() || [0, 0];
-        // Remove the character that sits at this index from the password
-        removeCharAt(password, current[1] - 2, 2);
-        // Account for removed character in current
-        current[1] -= 2;
-        // if the length of the sequence is greater than 3, add it back to the second array
-        if (current[1] - current[0] > 3) second.push(current);
-        // Decrement toRemove by 2
-        toRemove -= 2;
-        // Increase edits by 2
-        edits += 2;
-      }
-      // Process third array
-      while (third.length > 0) {
-        // Pop a value off from the third array
-        current = third.pop() || [0, 0];
-        // Remove the character that sits at this index from the password
-        removeCharAt(password, current[1] - 3, 3);
-        // Account for removed characters in current
-        current[1] -= 3;
-        // if the length of the sequence is great than 3, add it back to the third array
-        if (current[1] - current[0] > 3) third.push(current);
-        // Decrement toRemove by 1
-        toRemove -= 3;
-        // Increase edits by 3
-        edits += 3;
-      }
-      if (first.length === 0 && second.length === 0 && third.length === 0) break;
-    }
-    L = 1;
-    for (let i = 1; i < passwordLength; i++) {
-      if (password[i] === password[i - 1]) {
-        L++;
-      } else {
-        if (L >= 3) edits += L / 3;
-        L = 1;
-      }
-    }
-    if (L >= 3) edits += L / 3;
+    // Iterate over containers until there are no more characters to remove
+    let pw = removeCharacters(password, toRemove, first, second, third);
+    edits += countRepeatEdits(pw);
   } else {
-    for (let i = 1; i < passwordLength; i++) {
-      if (password[i] === password[i - 1]) {
-        L++;
-      } else {
-        if (L >= 3) edits += L / 2 - 1;
-        L = 1;
-      }
-    }
-    if (L >= 3) edits += L / 2 - 1;
+    edits += countRepeatEdits(password);
   }
+
   // Return the number of repeat edits required
   return Math.floor(edits);
 };
 
 export const removeCharAt = (str: string, i: number, charsToRemove: number): string => {
   var tmp = str.split(''); // convert to an array
-  tmp.splice(i - charsToRemove , charsToRemove); // remove 1 element from the array (adjusting for non-zero-indexed counts)
+  tmp.splice(i, charsToRemove); // remove 1 element from the array (adjusting for non-zero-indexed counts)
   return tmp.join(''); // reconstruct the string
 }
+
+export const countRepeatEdits = (pw: string): number => {
+  let L = 1;
+  let edits = 0;
+  let PL = pw.length;
+  for (let i = 1; i < PL; i++) {
+    if (pw[i] === pw[i - 1]) {
+      L++;
+      if (i + 1 === PL && L >= 3) {
+        if (PL >= 6) edits += Math.floor(L / 3);
+        if (PL < 6) edits += L / 2 - 1;
+      }
+    } else if (L >= 3) {
+      if (PL >= 6) edits += Math.floor(L / 3);
+      if (PL < 6) edits += L / 2 - 1;
+      L = 1;
+    } else {
+      L = 1;
+    }
+  }
+
+  return edits;
+};
 
 export const sortSequences = (password: string): SequenceContainer => {
   // Save password length for easy access
@@ -203,13 +150,13 @@ export const sortSequences = (password: string): SequenceContainer => {
       // Store that sequence in the correct stack
       switch ((sequence.length - 2) % 3) {
         case 1:
-          first.push([i - L, i])
+          first.push([i - L, i - 1])
           break;
         case 2:
-          second.push([i - L, i]);
+          second.push([i - L, i - 1]);
           break;
         case 0:
-          third.push([i - L, i]);
+          third.push([i - L, i - 1]);
           break;
         default:
           break;
@@ -243,4 +190,100 @@ export const sortSequences = (password: string): SequenceContainer => {
   }
 
   return { first, second, third };
+};
+
+/**
+ * 
+ * @param password 
+ * @param toRemove 
+ * @param first 
+ * @param second 
+ * @param third 
+ * @returns edits: number
+ * 
+ * This function takes the password and the number of characters that need to be removed from it
+ * 
+ * We pass in three containers, each with any number of arrays containing two digits
+ * The two digits contained in the internal array mark the start and end of the repeat sequence
+ * 
+ * If the arrays are in the first container, they must be processed first, then updated
+ * If the arrays are in the second container, they must be processed second, then updated
+ * If the arrays are in the third container, they must be process third, then updated
+ */
+
+export const removeCharacters = (password: string, toRemove: number | undefined, first: number[][], second: number[][], third: number[][]) => {
+  // Declare current
+  let current: number[] = [0, 0];
+  // Remove repeating characters using toRemove as a decreasing count
+  while (toRemove && toRemove > 0) {
+    // Process first array
+    while (first.length > 0 && toRemove > 0) {
+      // Pop a value off from the first array
+      current = first.pop() || [0, 0];
+      // Remove the character that sits at this index from the password
+      password = removeCharAt(password, current[1], 1);
+      // Account for removed character in current
+      current[1]--;
+      // if the length of the sequence is greater than 3, add it to the third array
+      if (current[1] - current[0] > 3) third.push(current);
+      // Decrement toRemove by 1
+      toRemove--;
+    }
+    // Process second array
+    while (second.length > 0 && toRemove > 0) {
+      // Pop a value off from the second array
+      current = second.pop() || [0, 0];
+      // Remove the character that sits at this index from the password
+      if (toRemove >= 2) {
+        password = removeCharAt(password, current[1] - 1, 2);
+        // Account for removed character in current
+        current[1] -= 2;
+        // if the length of the sequence is greater than 3, add it back to the second array
+        if (current[1] - current[0] > 3) second.push(current);
+        // Decrement toRemove by 2
+        toRemove -= 2;
+      } else if (toRemove === 1) {
+        password = removeCharAt(password, current[1], 1);
+        current[1]--;
+        if (current[1] - current[0] > 3) first.push(current);
+        toRemove--;
+      }
+      if (first.length > 0) break;
+    }
+    // Process third array
+    while (third.length > 0 && toRemove > 0) {
+      // Pop a value off from the third array
+      current = third.pop() || [0, 0];
+      // Remove the character that sits at this index from the password
+      if (toRemove >= 3) {
+        password = removeCharAt(password, current[1] - 2, 3);
+        // Account for removed characters in current
+        current[1] -= 3;
+        // if the length of the sequence is greater than 3, add it back to the third array
+        if (current[1] - current[0] > 3) third.push(current);
+        // Decrement toRemove by 1
+        toRemove -= 3;
+      } else if (toRemove === 2) {
+        password = removeCharAt(password, current[1] - 1, 2);
+        // Account for removed characters in current
+        current[1] -= 2;
+        // if the length of the sequence is greater than 3, add it back to the first array
+        if (current[1] - current[0] > 3) first.push(current);
+        // Decrement toRemove by 1
+        toRemove -= 2;
+      } else if (toRemove === 1) {
+        password = removeCharAt(password, current[1], 1);
+        // Account for removed characters in current
+        current[1]--;
+        // if the length of the sequence is greater than 3, add it back to the second array
+        if (current[1] - current[0] > 3) second.push(current);
+        // Decrement toRemove by 1
+        toRemove--;
+      }
+      if (first.length > 0 || second.length > 0) break;
+    }
+    if (first.length === 0 && second.length === 0 && third.length === 0) break;
+  }
+
+  return password;
 };
