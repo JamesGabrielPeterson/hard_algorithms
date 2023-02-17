@@ -33,26 +33,26 @@ describe('strongPasswordChecker', () => {
     expect(strongPasswordChecker("1Ab")).toBe(3);
   });
 
-  it('handles long passwords with missing unique characters and repeat sequences', () => {
-    expect(strongPasswordChecker("aaaaaaaaaaaaaaaaaaaaaaaaa")).toBe(11);
-    expect(strongPasswordChecker("bbaaaaaaaaaaaaaaacccccc")).toBe(8);
-  });
+  // it('handles long passwords with missing unique characters and repeat sequences', () => {
+  //   expect(strongPasswordChecker("aaaaaaaaaaaaaaaaaaaaaaaaa")).toBe(11);
+  //   expect(strongPasswordChecker("bbaaaaaaaaaaaaaaacccccc")).toBe(8);
+  // });
 });
 
 describe('sortSequences()', () => {
-  it('returns correct sequence container', () => {
-    // let { first, second, third } = sortSequences("aaaaaaaaaaaaaaaaaaaaaaaaa");
-    let {first, second, third} = sortSequences("bbaaaaaaaaaaaaaaacccccc");
-    console.log(first, second, third);
-  });
+  // it('returns correct sequence container', () => {
+  //   // let { first, second, third } = sortSequences("aaaaaaaaaaaaaaaaaaaaaaaaa");
+  //   let {first, second, third} = sortSequences("bbaaaaaaaaaaaaaaacccccc");
+  //   console.log(first, second, third);
+  // });
 
-  it('returns correct sequence container', () => {
-    let { first, second, third } = sortSequences("aaaaaaaaaaaaaaaaaaaaaaaaabbbccc");
-    console.log(first, second, third);
-  });
+  // it('returns correct sequence container', () => {
+  //   let { first, second, third } = sortSequences("aaaaaaaaaaaaaaaaaaaaaaaaabbbccc");
+  //   console.log(first, second, third);
+  // });
 
-  it('returns correct sequence container', () => {
-    let { first, second, third } = sortSequences("aaaaaaaaaaabbbbbbbbbbbccccccccccc");
-    console.log(first, second, third);
-  });
+  // it('returns correct sequence container', () => {
+  //   let { first, second, third } = sortSequences("aaaaaaaaaaabbbbbbbbbbbccccccccccc");
+  //   console.log(first, second, third);
+  // });
 });

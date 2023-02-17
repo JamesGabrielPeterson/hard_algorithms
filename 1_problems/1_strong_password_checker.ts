@@ -212,7 +212,6 @@ export const sortSequences = (password: string): SequenceContainer => {
           third.push([i - L, i]);
           break;
         default:
-          console.log((sequence.length - 2) % 3);
           break;
       }
       // After storing sequence in correct bin
