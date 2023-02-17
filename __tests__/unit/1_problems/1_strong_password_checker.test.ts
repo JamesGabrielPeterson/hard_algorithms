@@ -1,42 +1,58 @@
-import { strongPasswordChecker, removeCharAt } from "../../../1_problems/1_strong_password_checker";
+import { strongPasswordChecker, sortSequences } from "../../../1_problems/1_strong_password_checker";
 
 describe('strongPasswordChecker', () => {
-
-  it('checks for valid password', () => {
-    expect(strongPasswordChecker("Aaab123")).toBe(0);
-    expect(strongPasswordChecker("Heyy987654321")).toBe(0);
-    expect(strongPasswordChecker("Ridiculous1")).toBe(0);
+  it('handles valid password', () => {
+    expect(strongPasswordChecker("1337C0d3")).toBe(0);
+    expect(strongPasswordChecker("77yY7742ayoo")).toBe(0);
+    expect(strongPasswordChecker("pennycheckerR1")).toBe(0);
+    expect(strongPasswordChecker("9YOOyooyoo99")).toBe(0);
+    expect(strongPasswordChecker("telliMERE707")).toBe(0);
   });
 
-  it('checks for valid length with incorrect unique characters and repeats', () => {
-    expect(strongPasswordChecker("aaaab123")).toBe(1);
-    expect(strongPasswordChecker("RIDICULOUS1")).toBe(1);
-    expect(strongPasswordChecker("RIDICULOUSlower")).toBe(1);
-    expect(strongPasswordChecker("238956381741")).toBe(2);
-    expect(strongPasswordChecker("thisisalllowercase")).toBe(2);
-    expect(strongPasswordChecker("THISISALLUPPERCASE")).toBe(2);
-    expect(strongPasswordChecker("heyyyyyyyyyy98765432")).toBe(3);
-    expect(strongPasswordChecker("aaaaaaaaaaaaaaaaaaaa")).toBe(6);
+  it('handles valid length with repeat sequences', () => {
+    expect(strongPasswordChecker("SeeeSawww10")).toBe(2);
+    expect(strongPasswordChecker("aaaaaaaaaaaaaL1")).toBe(4);
+    expect(strongPasswordChecker("Rayyyyyy10yyyyyyy")).toBe(4);
   });
 
-  it('checks for length less than lower bound with incorrect characters and repeats', () => {
-    expect(strongPasswordChecker("aaa")).toBe(3);
+  it('handles valid length with missing unique characters', () => {
+    expect(strongPasswordChecker("SeeSaww")).toBe(1); // needs number
+    expect(strongPasswordChecker("abracadabra")).toBe(2); // needs number and uppercasse
+    expect(strongPasswordChecker("RAYY10YY")).toBe(1); // needs lowercase
+  });
+
+  it('handles valid length with repeat sequences and missing unique characters', () => {
+    expect(strongPasswordChecker("SeeeeeSaawwwwwwwww")).toBe(4); // needs number
+    expect(strongPasswordChecker("hellohowwwareeeyouuu")).toBe(3); // needs number and uppercasse
+    expect(strongPasswordChecker("1111111111222333")).toBe(5); 
+  });
+
+  it('handles short passwords', () => {
     expect(strongPasswordChecker("a")).toBe(5);
-    expect(strongPasswordChecker("aaaaa")).toBe(2);
-    expect(strongPasswordChecker("TTTTT")).toBe(2);
-    expect(strongPasswordChecker("11111")).toBe(2);
-    expect(strongPasswordChecker("2345")).toBe(2);
-    expect(strongPasswordChecker("BB")).toBe(4);
+    expect(strongPasswordChecker("abCde")).toBe(1);
+    expect(strongPasswordChecker("1Ab")).toBe(3);
   });
 
-  it('checks for length greater than upper bound with incorrect unique characters and repeats', () => {
+  it('handles long passwords with missing unique characters and repeat sequences', () => {
     expect(strongPasswordChecker("aaaaaaaaaaaaaaaaaaaaaaaaa")).toBe(11);
+    expect(strongPasswordChecker("bbaaaaaaaaaaaaaaacccccc")).toBe(8);
   });
 });
 
-describe('removeCharAt()', () => {
-  it('returns correct string', () => {
-    expect(removeCharAt("aaaaaaaaaaaaaaaaaaaaaaaaa", 24, 2)).toBe("aaaaaaaaaaaaaaaaaaaaaaa");
-    expect(removeCharAt("aaaaaaaaaaaaaaaaaaaaaaa", 23, 3)).toBe("aaaaaaaaaaaaaaaaaaaa");
+describe('sortSequences()', () => {
+  it('returns correct sequence container', () => {
+    // let { first, second, third } = sortSequences("aaaaaaaaaaaaaaaaaaaaaaaaa");
+    let {first, second, third} = sortSequences("bbaaaaaaaaaaaaaaacccccc");
+    console.log(first, second, third);
+  });
+
+  it('returns correct sequence container', () => {
+    let { first, second, third } = sortSequences("aaaaaaaaaaaaaaaaaaaaaaaaabbbccc");
+    console.log(first, second, third);
+  });
+
+  it('returns correct sequence container', () => {
+    let { first, second, third } = sortSequences("aaaaaaaaaaabbbbbbbbbbbccccccccccc");
+    console.log(first, second, third);
   });
 });
