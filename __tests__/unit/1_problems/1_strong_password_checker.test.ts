@@ -1,4 +1,4 @@
-import { strongPasswordChecker, sortSequences, countRepeatEdits } from "../../../1_problems/1_strong_password_checker";
+import { strongPasswordChecker, categorizeAndSortSequences, countEditedSequenceCharacters } from "../../../1_problems/1_strong_password_checker";
 
 describe('strongPasswordChecker', () => {
   it('handles valid password', () => {
@@ -37,33 +37,39 @@ describe('strongPasswordChecker', () => {
     expect(strongPasswordChecker("aaaaaaaaaaaaaaaaaaaaaaaaa")).toBe(11);
     expect(strongPasswordChecker("bbaaaaaaaaaaaaaaacccccc")).toBe(8);
     expect(strongPasswordChecker("FFFFFFFFFFFFFFF11111111111111111111AAA")).toBe(23);
+    expect(strongPasswordChecker("A1234567890aaabbbbccccc")).toBe(4);
   });
 });
 
-describe('sortSequences()', () => {
+describe('categorizeAndSortSequences()', () => {
   // it('returns correct sequence container', () => {
-  //   // let { first, second, third } = sortSequences("aaaaaaaaaaaaaaaaaaaaaaaaa");
-  //   let {first, second, third} = sortSequences("bbaaaaaaaaaaaaaaacccccc");
+  //   // let { first, second, third } = categorizeAndSortSequences("aaaaaaaaaaaaaaaaaaaaaaaaa");
+  //   let {first, second, third} = categorizeAndSortSequences("bbaaaaaaaaaaaaaaacccccc");
   //   console.log(first, second, third);
   // });
 
-  it('returns correct sequence container', () => {
-    // let { first, second, third } = sortSequences("aaaaaaaaaaaaaaaaaaaaaaaaa");
-    let {first, second, third} = sortSequences("FFFFFFFFFFFFFFF11111111111111111111AAA");
-    console.log(first, second, third);
+  // it('returns correct sequence container', () => {
+  //   // let { first, second, third } = categorizeAndSortSequences("aaaaaaaaaaaaaaaaaaaaaaaaa");
+  //   let {processFirst, processSecond, processThird} = categorizeAndSortSequences("FFFFFFFFFFFFFFF11111111111111111111AAA");
+  //   console.log(processFirst, processSecond, processThird);
+  // });
+
+  // it('returns correct sequence container', () => {
+  //   let { first, second, third } = categorizeAndSortSequences("aaaaaaaaaaaaaaaaaaaaaaaaabbbccc");
+  //   console.log(first, second, third);
+  // });
+
+  // it('returns correct sequence container', () => {
+  //   let { first, second, third } = categorizeAndSortSequences("aaaaaaaaaaabbbbbbbbbbbccccccccccc");
+  //   console.log(first, second, third);
+  // });
+
+    it('returns correct sequence container', () => {
+    let {processFirst, processSecond, processThird} = categorizeAndSortSequences("A1234567890aaabbbbccccc");
+    console.log(processFirst, processSecond, processThird);
   });
-
-  // it('returns correct sequence container', () => {
-  //   let { first, second, third } = sortSequences("aaaaaaaaaaaaaaaaaaaaaaaaabbbccc");
-  //   console.log(first, second, third);
-  // });
-
-  // it('returns correct sequence container', () => {
-  //   let { first, second, third } = sortSequences("aaaaaaaaaaabbbbbbbbbbbccccccccccc");
-  //   console.log(first, second, third);
-  // });
 });
 
-describe('countRepeatEdits()', () => {
-  expect(countRepeatEdits("aaaaaaaaaaaaaaaaaaa")).toBe(6);
+describe('countEditedSequenceCharacters()', () => {
+  expect(countEditedSequenceCharacters("aaaaaaaaaaaaaaaaaaa")).toBe(6);
 });
