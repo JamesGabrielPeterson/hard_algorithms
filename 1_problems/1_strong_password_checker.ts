@@ -68,9 +68,7 @@ export const findRepeatEdits = (password: string, toRemove?: number): number => 
 
   if (passwordLength > 20) {
     let { processFirst, processSecond, processThird } = categorizeAndSortSequences(password);
-    console.log("First: ", processFirst, "Second: ", processSecond, "Third: ", processThird);
     let modifiedPassword = removeCharacters(password, toRemove, processFirst, processSecond, processThird);
-    console.log(modifiedPassword);
     edits += countEditedSequenceCharacters(modifiedPassword);
   } else {
     edits += countEditedSequenceCharacters(password);
@@ -173,17 +171,6 @@ export const countEditedSequenceCharacters = (pw: string): number => {
  * If the arrays are in the third container, they must be process third, then updated
  */
 
-let pw = "aaaabaaaaaa123456789F"
-let pwl = 21;
-let a = 1;
-let b = 0;
-let c = 0;
-let f = ['aaaaaa'];
-let s = ['aaaa'];
-let t = [];
-let remove = 1;
-let curr = '';
-
 export const removeCharacters = (password: string, toRemove: number | undefined, first: string[], second: string[], third: string[]) => {
   // Declare current
   let current: string = "";
@@ -241,8 +228,6 @@ export const removeCharacters = (password: string, toRemove: number | undefined,
     }
     if (!first.length && !second.length && !third.length) break;
   }
-
-  console.log("NEW STRING: ", first.join("") + second.join("") + third.join(""));
 
   return first.join("^") + "*" + second.join("^") + "*" + third.join("^");
 };
