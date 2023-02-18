@@ -141,12 +141,10 @@ export const countEditedSequenceCharacters = (pw: string): number => {
     if (pw[i] === pw[i - 1]) {
       L++;
       if (i + 1 === PL && L >= 3) {
-        if (PL >= 6) edits += Math.floor(L / 3);
-        if (PL < 6) edits += Math.ceil(L / 2) - 1;
+        edits += Math.floor(L / 3);
       }
     } else if (L >= 3) {
-      if (PL >= 6) edits += Math.floor(L / 3);
-      if (PL < 6) edits += Math.ceil(L / 2) - 1;
+      edits += Math.floor(L / 3);
       L = 1;
     } else {
       L = 1;
@@ -174,6 +172,17 @@ export const countEditedSequenceCharacters = (pw: string): number => {
  * If the arrays are in the second container, they must be processed second, then updated
  * If the arrays are in the third container, they must be process third, then updated
  */
+
+let pw = "aaaabaaaaaa123456789F"
+let pwl = 21;
+let a = 1;
+let b = 0;
+let c = 0;
+let f = ['aaaaaa'];
+let s = ['aaaa'];
+let t = [];
+let remove = 1;
+let curr = '';
 
 export const removeCharacters = (password: string, toRemove: number | undefined, first: string[], second: string[], third: string[]) => {
   // Declare current
@@ -235,7 +244,7 @@ export const removeCharacters = (password: string, toRemove: number | undefined,
 
   console.log("NEW STRING: ", first.join("") + second.join("") + third.join(""));
 
-  return first.join("") + second.join("") + third.join("");
+  return first.join("^") + "*" + second.join("^") + "*" + third.join("^");
 };
 
 export const removeCharAt = (str: string, start: number, charsToRemove: number): string => {

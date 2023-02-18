@@ -38,6 +38,7 @@ describe('strongPasswordChecker', () => {
     expect(strongPasswordChecker("bbaaaaaaaaaaaaaaacccccc")).toBe(8);
     expect(strongPasswordChecker("FFFFFFFFFFFFFFF11111111111111111111AAA")).toBe(23);
     expect(strongPasswordChecker("A1234567890aaabbbbccccc")).toBe(4);
+    expect(strongPasswordChecker("aaaabaaaaaa123456789F")).toBe(3);
   });
 });
 
@@ -64,8 +65,13 @@ describe('categorizeAndSortSequences()', () => {
   //   console.log(first, second, third);
   // });
 
-    it('returns correct sequence container', () => {
-    let {processFirst, processSecond, processThird} = categorizeAndSortSequences("A1234567890aaabbbbccccc");
+  //   it('returns correct sequence container', () => {
+  //   let {processFirst, processSecond, processThird} = categorizeAndSortSequences("A1234567890aaabbbbccccc");
+  //   console.log(processFirst, processSecond, processThird);
+  // });
+
+  it('returns correct sequence container', () => {
+    let {processFirst, processSecond, processThird} = categorizeAndSortSequences("aaaabaaaaaa123456789F");
     console.log(processFirst, processSecond, processThird);
   });
 });
