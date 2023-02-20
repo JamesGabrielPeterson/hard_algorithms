@@ -33,19 +33,21 @@ export const strongPasswordChecker = (password: string): number => {
     case 'SHORT':
       A = 6 - passwordLength;
       B = findCharacterEdits(password);
-      C = findRepeatEdits(password);
+      C = countEditedSequenceCharacters(password);
       totalEdits = Math.max(A, B, C);
       break;
     case 'VALID':
       A = 0;
       B = findCharacterEdits(password);
-      C = findRepeatEdits(password);
+      C = countEditedSequenceCharacters(password);
       totalEdits = Math.max(B, C);
       break;
     case 'LONG':
       A = passwordLength - 20;
       B = findCharacterEdits(password);
-      C = findRepeatEdits(password, A);
+      let { processFirst, processSecond, processThird } = categorizeAndSortSequences(password);
+      let modifiedPassword = removeCharacters(password, A, processFirst, processSecond, processThird);
+      C = countEditedSequenceCharacters(modifiedPassword);
       totalEdits = A + Math.max(B, C);
   }
 
@@ -62,20 +64,65 @@ export const findCharacterEdits = (password: string): number => {
   return requiredEdits;
 };
 
-export const findRepeatEdits = (password: string, toRemove?: number): number => {
-  let passwordLength = password.length;
-  let edits = 0;
+// export const storeSequences = (password: string): number[] => {
+//   const passwordLength = password.length;
+//   let sequenceLength: number = 1;
+//   let pq: number[] = [];
 
-  if (passwordLength > 20) {
-    let { processFirst, processSecond, processThird } = categorizeAndSortSequences(password);
-    let modifiedPassword = removeCharacters(password, toRemove, processFirst, processSecond, processThird);
-    edits += countEditedSequenceCharacters(modifiedPassword);
-  } else {
-    edits += countEditedSequenceCharacters(password);
-  }
+//   for (let i = 1; i < passwordLength; i++) {
+//     if (password[i] === password[i - 1]) {
+//       sequenceLength++;
+//     } else if (sequenceLength >= 3) {
+//       pq.push(sequenceLength);
+//       sequenceLength = 1;
+//     }
+//   }
 
-  return edits;
-};
+//   if (sequenceLength >= 3) {
+//     pq.push(sequenceLength);
+//     sequenceLength = 1;
+//   }
+
+//   return pq;
+// };
+
+// export const removeCharactersTwo = (priorityQueue: number[], toRemove: number): number[] => {
+
+//   while (toRemove && toRemove > 0) {
+//     let currentPriority = -1;
+//     let topPriority = Infinity;
+//     let index = -1;
+//     for (let i = 0; i < priorityQueue.length; i++) {
+//       currentPriority = (priorityQueue[i] - 2) % 3;
+//       if (currentPriority === 0) currentPriority = 3;
+//       if (currentPriority === 1) {
+//         topPriority = 1;
+//         index = i;
+//         break;
+//       } else if (currentPriority === 2) {
+//         if (currentPriority < topPriority) {
+//           topPriority = currentPriority;
+//           index = i;
+//         }
+//       } else if (currentPriority === 3) {
+//         if (currentPriority < topPriority) {
+//           topPriority = currentPriority;
+//           index = i;
+//         }
+//       }
+//     }
+
+//     let processingPriority = priorityQueue[index];
+
+//     processingPriority -= currentPriority;
+//     toRemove -= currentPriority;
+
+//     topPriority = Infinity;
+//     currentPriority = -1;
+//   }
+  
+//   return priorityQueue;
+// };
 
 export const categorizeAndSortSequences = (password: string): SequenceContainer => {
   // Save password length for easy access

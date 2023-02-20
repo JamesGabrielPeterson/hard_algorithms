@@ -79,3 +79,11 @@ describe('categorizeAndSortSequences()', () => {
 describe('countEditedSequenceCharacters()', () => {
   expect(countEditedSequenceCharacters("aaaaaaaaaaaaaaaaaaa")).toBe(6);
 });
+
+// describe('createPriorityQueue()', () => {
+//   console.log("PRIORITY QUEUE: ", storeSequences("aaaaaaaaaaarrrbbbbbbbbbbyyyyyccccccccclllllll"));
+// });
+
+// describe('removeCharactersTwo()', () => {
+//   console.log("NEW QUEUE: ", removeCharactersTwo([ 11, 3, 10, 5, 9, 7 ], 3));
+// });
